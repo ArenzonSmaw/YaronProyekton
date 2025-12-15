@@ -1,0 +1,41 @@
+IDAO: 
+Add(table, object)
+Remove(type, objectID)
+Modify(type, field, newVal)
+Wakeup()
+
+DAO: implements IDAO
+Update - saves changes on DB
+IDAO implementation (
+    Add - adds new object to DB
+    Remove - removes object from DB
+    Modify - changes field in object on DB
+    Wakeup - loads info from DB at system startup
+)
+
+Iterators
+hasNext()
+next()
+
+
+Delivery:
+DeliveryNo
+weight
+destination
+customerID
+DilveryPerson ref
+
+
+Deliverer:
+DelivererID
+City
+DeliveryCapacity
+DeliveryCounter
+
+Exceptions:
+UnfinishedDutyException(DelivererID) - removal or modification of deliverer when he has remaining deliveries
+NoAvailableDelivererException(DeliveryID) - there are no available deliverers for the city of delivery
+InvalidDeliveryInfoException(DeliveryID)
+InvalidDelivererInfoException(DelivererID) 
+
+
