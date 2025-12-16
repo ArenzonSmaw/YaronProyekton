@@ -1,7 +1,10 @@
-package deliveryTrio.YaronProjecton.Exceptions;
+package deliveryTrio.YaronProjecton.Exceptions.InvalidInfo;
 
-public class InvalidInfoException extends RuntimeException {
-  public InvalidInfoException(String message) {
-    super(message);
-  }
+public class InvalidInfoException extends Exception {
+    public InvalidInfoException(String primeKey, String field, String value) {
+        super("Invalid value '"+value+"' for field '"+field+"' for object with primary key '"+primeKey+"'.");
+    }
+    public InvalidInfoException(String message) {
+        super(message);
+    }
 }

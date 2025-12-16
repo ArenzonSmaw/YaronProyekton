@@ -1,4 +1,4 @@
-package deliveryTrio.YaronProjecton.Exceptions;
+package deliveryTrio.YaronProjecton.Exceptions.NotFound;
 
 public class DeliveryNotFoundException extends NotFoundException {
     public DeliveryNotFoundException(int id) {

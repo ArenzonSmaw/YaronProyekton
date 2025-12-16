@@ -1,7 +1,10 @@
-package deliveryTrio.YaronProjecton.Exceptions;
+package deliveryTrio.YaronProjecton.Exceptions.NotFound;
 
-public class NotFoundException extends RuntimeException {
-    public NotFoundException(String primaryKey) {
-        super("No object with primary key '"+primaryKey+"' found.");
+public class NotFoundException extends Exception {
+    public NotFoundException(String message) {
+        super(message);
+    }
+    public NotFoundException(String obj, String primeKey) {
+        super("No "+obj+" with primary key '"+primeKey+"' found.");
     }
 }

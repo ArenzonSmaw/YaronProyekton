@@ -1,7 +1,7 @@
 package deliveryTrio.YaronProjecton.Exceptions;
 
-public class NoAvailableDeliveryPersonException extends RuntimeException {
-  public NoAvailableDeliveryPersonException(String message) {
-    super(message);
-  }
+public class NoAvailableDeliveryPersonException extends Exception {
+    public NoAvailableDeliveryPersonException(int deliveryNo, String city) {
+        super("No available delivery men in '"+city+"' to deliver delivery: '"+deliveryNo+"'.");
+    }
 }
