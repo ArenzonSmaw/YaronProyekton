@@ -34,9 +34,9 @@ DeliveryCapacity
 DeliveryCounter
 
 Exceptions:
-UnfinishedDutyException(DelivererID) - removal or modification of deliverer when he has remaining deliveries
+{UnfinishedDutyException(DelivererID) - removal or modification of deliverer when he has remaining deliveries
 NoAvailableDelivererException(DeliveryID) - there are no available deliverers for the city of delivery
 InvalidDeliveryInfoException(DeliveryID)
 InvalidDelivererInfoException(DelivererID) 
-ObjectNotFound() - there is no object with the given id
+ObjectNotFound() - there is no object with the given id} finished
 
