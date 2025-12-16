@@ -28,6 +28,7 @@ DilveryPerson ref
 
 Deliverer:
 DelivererID
+name
 City
 DeliveryCapacity
 DeliveryCounter
@@ -37,5 +38,5 @@ UnfinishedDutyException(DelivererID) - removal or modification of deliverer when
 NoAvailableDelivererException(DeliveryID) - there are no available deliverers for the city of delivery
 InvalidDeliveryInfoException(DeliveryID)
 InvalidDelivererInfoException(DelivererID) 
-
+ObjectNotFound() - there is no object with the given id
 
