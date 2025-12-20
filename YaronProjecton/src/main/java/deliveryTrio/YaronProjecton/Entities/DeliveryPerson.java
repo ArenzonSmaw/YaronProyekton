@@ -1,20 +1,30 @@
 package deliveryTrio.YaronProjecton.Entities;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-@Service
-public class DeliveryPerson implements Comparable<DeliveryPerson>{
-    private int delivererID=0; // when creating the object is empty, after added to the data structure id will be given
+import deliveryTrio.YaronProjecton.Exceptions.HandsFullException;
+import deliveryTrio.YaronProjecton.Exceptions.NotFound.NotFoundException;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
+import java.io.Serializable;
+
+public class DeliveryPerson implements Comparable<DeliveryPerson>,Serializable{
+    private int delivererID; // when creating the object is empty, after added to the data structure id will be given
+    @NotNull
     private String name;
+    @NotNull
+    @Min(value=3)
     private String  city;
     private int deliveryMaxCapacity; // add to properties
-    private  int deliveryCounter=0;
+    private int deliveryCounter=0;
+    // static attributes
+    public static int maxCapacity=50; // max capacity of deliveries
+    private static final long serialVersionUID = 1L;
 
-    public DeliveryPerson(String name, String city, @Value("${deliveryPerson.maxCapacity}") int deliveryMaxCapacity){
+    public DeliveryPerson(String name, String city, int workerID){
         this.name=name;
         this.city=city;
-        this.deliveryMaxCapacity=deliveryMaxCapacity;
+        delivererID = workerID;
     }
     // getters
     public int getDelivererID() {
@@ -24,17 +34,42 @@ public class DeliveryPerson implements Comparable<DeliveryPerson>{
     public String getCity() {
         return city;
     }
+    public void setCity(String nCity) {
+        city = nCity;
+    }
+
+    public void setMaxCapacity(String nMax) {
+        int max = 0;
+        for (int i = 0; i < nMax.length(); i++) {
+            max *= 10;
+            max += nMax.charAt(i) - '0';
+        }
+        maxCapacity = max;
+    }
 
     public String getName() {
         return name;
     }
-
+    public void setName(String name){
+        this.name=name;
+    }
     public int getDeliveryMaxCapacity() {
         return deliveryMaxCapacity;
     }
 
     public int getDeliveryCounter() {
         return deliveryCounter;
+    }
+
+    public int getID() {return delivererID;}
+
+    public void addDelivery() throws HandsFullException{
+        if (deliveryCounter == deliveryMaxCapacity)
+            throw new HandsFullException(delivererID);
+    }
+    public void removeDelivery() throws NotFoundException{
+        if (deliveryCounter == 0)
+            throw new NotFoundException("Delivery person '"+delivererID+"' has no deliveries");
     }
 
     // toString

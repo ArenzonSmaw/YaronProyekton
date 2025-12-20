@@ -1,37 +1,35 @@
 package deliveryTrio.YaronProjecton.Services.DeliveryPerson;
 import deliveryTrio.YaronProjecton.Entities.DeliveryPerson;
+import deliveryTrio.YaronProjecton.Services.CollectionsInterface;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 @Service
-public class DeliveryPersonCollection implements deliveryTrio.YaronProjecton.Services.CollectionsInterface<DeliveryPerson>,Iterable<DeliveryPerson>{
-    private List<DeliveryPerson> deliveryPersons;
+public class DeliveryPersonCollection implements CollectionsInterface<DeliveryPerson>,Iterable<DeliveryPerson>, Serializable {
+    private ArrayList<DeliveryPerson> deliveryPersons;
+    @Value("${deliveryPersonCollection.startingID}")
     private int lastID;
-
+    // static attributes
+    private static final long serialVersionUID = 3L;
     public DeliveryPersonCollection(){
         deliveryPersons=new ArrayList<DeliveryPerson>();
-    }
-
-    @PostConstruct
-    public void initialize(@Value("${deliveryPersonCollection.startingID}") int stID) {
-        lastID = stID;
     }
 
     @Override
     public Iterator<DeliveryPerson> iterator() {
         return new DeliveryPersonIterator(deliveryPersons);
     }
-
     @Override
     public boolean add(DeliveryPerson deliveryPerson) {
         return deliveryPersons.add(deliveryPerson);
     }
-
     @Override
     public boolean remove(DeliveryPerson deliveryPerson) {
         return deliveryPersons.remove(deliveryPerson);
@@ -53,6 +51,14 @@ public class DeliveryPersonCollection implements deliveryTrio.YaronProjecton.Ser
             }
         }
         return false;
+    }
+    @Override
+    public ArrayList<DeliveryPerson> getList() {
+        return deliveryPersons;
+    }
+    @Override
+    public int amount() {
+        return deliveryPersons.size();
     }
 
     public void showDeliveryPersons(){
