@@ -11,10 +11,10 @@ import deliveryTrio.YaronProjecton.Exceptions.NotFound.DeliveryPersonNotFoundExc
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.NotFoundException;
 import deliveryTrio.YaronProjecton.Exceptions.UnfinishedDutyException;
 import deliveryTrio.YaronProjecton.Services.DataAccess.DataAccessObject;
+import deliveryTrio.YaronProjecton.Services.DataAccess.IDAO;
 import deliveryTrio.YaronProjecton.Services.Delivery.DeliveryCollection;
 import deliveryTrio.YaronProjecton.Services.DeliveryPerson.DeliveryPersonCollection;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 @Service("manager")
 public class DeliveryManager {
     @NotNull
-    private final DataAccessObject dao;
+    private final IDAO dao;
     private int deliveryID, deliveryPersonID;
     private int startingDeliveryID;
     private int startingDeliveryPersonID;

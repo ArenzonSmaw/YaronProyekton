@@ -5,7 +5,6 @@ import deliveryTrio.YaronProjecton.Exceptions.HandsFullException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.NotFoundException;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.Serializable;
 

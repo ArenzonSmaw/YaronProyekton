@@ -1,15 +1,11 @@
 package deliveryTrio.YaronProjecton.Services.Delivery;
 import deliveryTrio.YaronProjecton.Entities.Delivery;
 import deliveryTrio.YaronProjecton.Services.CollectionsInterface;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 @Service
 public class DeliveryCollection implements CollectionsInterface<Delivery>, Iterable<Delivery>, Serializable {

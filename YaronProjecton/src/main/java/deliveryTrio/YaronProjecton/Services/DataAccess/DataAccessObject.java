@@ -3,7 +3,6 @@ import deliveryTrio.YaronProjecton.Entities.Delivery;
 import deliveryTrio.YaronProjecton.Entities.DeliveryPerson;
 import deliveryTrio.YaronProjecton.Exceptions.DataSavingProblems.CantAccessDataException;
 import deliveryTrio.YaronProjecton.Exceptions.DataSavingProblems.CantUpdateDataException;
-import deliveryTrio.YaronProjecton.Exceptions.InvalidInfo.InvalidInfoException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.DeliveryNotFoundException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.DeliveryPersonNotFoundException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.NotFoundException;
@@ -17,8 +16,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 @Component

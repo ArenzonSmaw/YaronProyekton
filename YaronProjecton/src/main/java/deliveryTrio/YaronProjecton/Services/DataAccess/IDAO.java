@@ -3,14 +3,12 @@ import deliveryTrio.YaronProjecton.Entities.Delivery;
 import deliveryTrio.YaronProjecton.Entities.DeliveryPerson;
 import deliveryTrio.YaronProjecton.Exceptions.DataSavingProblems.CantAccessDataException;
 import deliveryTrio.YaronProjecton.Exceptions.DataSavingProblems.CantUpdateDataException;
-import deliveryTrio.YaronProjecton.Exceptions.InvalidInfo.InvalidInfoException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.DeliveryNotFoundException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.DeliveryPersonNotFoundException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.NotFoundException;
 import deliveryTrio.YaronProjecton.Services.Delivery.DeliveryCollection;
 import deliveryTrio.YaronProjecton.Services.DeliveryPerson.DeliveryPersonCollection;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface IDAO {

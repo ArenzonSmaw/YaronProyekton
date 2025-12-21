@@ -3,7 +3,6 @@ package deliveryTrio.YaronProjecton;
 import deliveryTrio.YaronProjecton.Entities.Delivery;
 import deliveryTrio.YaronProjecton.Entities.DeliveryPerson;
 import deliveryTrio.YaronProjecton.Exceptions.InvalidInputException;
-import deliveryTrio.YaronProjecton.Services.DataAccess.DataAccessObject;
 import deliveryTrio.YaronProjecton.Services.Delivery.DeliveryCollection;
 import deliveryTrio.YaronProjecton.Services.DeliveryManager;
 import deliveryTrio.YaronProjecton.Services.DeliveryPerson.DeliveryPersonCollection;
@@ -14,7 +13,7 @@ import java.util.Scanner;
 
 
 @SpringBootApplication
-public class YaronProjectonApplication {
+public class DeliveryCLI {
 
     public enum Option{
         ADD_DELIVERY_PERSON,
@@ -31,7 +30,7 @@ public class YaronProjectonApplication {
     }
 
 	public static void main(String[] args) {
-        var context=SpringApplication.run(YaronProjectonApplication.class, args);
+        var context=SpringApplication.run(DeliveryCLI.class, args);
         DeliveryManager mng = context.getBean("manager", DeliveryManager.class);
         Scanner scanner = new Scanner(System.in);
 
