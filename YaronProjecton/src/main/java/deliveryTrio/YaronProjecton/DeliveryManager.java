@@ -122,29 +122,27 @@ public class DeliveryManager {
         return dao.getDeliveryById(num);
     }
 
-    public void fireDeliveryPerson(int id) throws UnfinishedDutyException, NotFoundException, CantAccessDataException, CantUpdateDataException{
+    public void fireDeliveryPerson(int id) throws UnfinishedDutyException, NotFoundException, CantUpdateDataException{
         DeliveryPerson temp = getDeliveryPerson(id);
         if(temp.getDeliveryCounter() > 0)
             throw new UnfinishedDutyException(id);
         try{
             dao.remove(temp);
-            dao.update();
         } catch (DeliveryNotFoundException e) {
             //ummmm.... not a bug its an easter egg
         }
     }
-    public void delivered(int number) throws NotFoundException, CantAccessDataException, CantUpdateDataException{
+    public void delivered(int number) throws NotFoundException, CantUpdateDataException{
         Delivery temp = getDelivery(number);
         try {
             temp.getRef().removeDelivery();
             dao.remove(temp);
-            dao.update();
         } catch (DeliveryPersonNotFoundException e) {
             //"its not a bug its a feature" - Jesus H. Christ
         }
     }
 
-    public void modifyDelivery(int num, String field, String newVal) throws HandsFullException, NoAvailableDeliveryPersonException, NotFoundException, CantAccessDataException, CantUpdateDataException {
+    public void modifyDelivery(int num, String field, String newVal) throws HandsFullException, NoAvailableDeliveryPersonException, NotFoundException {
         Delivery temp = getDelivery(num);
         DeliveryPerson prev = temp.getRef();
         switch (field) {
@@ -162,9 +160,8 @@ public class DeliveryManager {
                 throw new RuntimeException("wallahi the field is lo relevanti");
 
         }
-        dao.update();
     }
-    public void modifyDeliveryPerson(int id, String field, String newVal) throws CantAccessDataException, UnfinishedDutyException, NotFoundException{
+    public void modifyDeliveryPerson(int id, String field, String newVal) throws  UnfinishedDutyException, NotFoundException {
         DeliveryPerson temp = getDeliveryPerson(id);
         switch (field) {
             case "city":
@@ -180,16 +177,6 @@ public class DeliveryManager {
                 break;
             default:
                 throw new RuntimeException("halas with the fake fields");
-        }
-        dao.update();
-    }
-    @PreDestroy
-    public void shutdownUpdate() {
-        try {
-            dao.update();
-        } catch (CantAccessDataException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
         }
     }
 }
