@@ -14,8 +14,8 @@ import java.util.List;
 @Service
 public class DeliveryPersonCollection implements CollectionsInterface<DeliveryPerson>,Iterable<DeliveryPerson>, Serializable {
     private ArrayList<DeliveryPerson> deliveryPersons;
-    @Value("${deliveryPersonCollection.startingID}")
-    private int lastID;
+//    @Value("${deliveryPersonCollection.startingID}")
+//    private int lastID;
     // static attributes
     private static final long serialVersionUID = 3L;
     public DeliveryPersonCollection(){

@@ -5,6 +5,7 @@ import deliveryTrio.YaronProjecton.Exceptions.HandsFullException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.NotFoundException;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.Serializable;
 
@@ -16,15 +17,16 @@ public class DeliveryPerson implements Comparable<DeliveryPerson>,Serializable{
     @Min(value=3)
     private String  city;
     private int deliveryMaxCapacity; // add to properties
-    private int deliveryCounter=0;
+    private int deliveryCounter = 0;
     // static attributes
-    public static int maxCapacity=50; // max capacity of deliveries
+    public static int defaultMaxCapacity;
     private static final long serialVersionUID = 1L;
 
     public DeliveryPerson(String name, String city, int workerID){
         this.name=name;
         this.city=city;
         delivererID = workerID;
+        this.deliveryMaxCapacity = defaultMaxCapacity;
     }
     // getters
     public int getDelivererID() {
@@ -44,7 +46,7 @@ public class DeliveryPerson implements Comparable<DeliveryPerson>,Serializable{
             max *= 10;
             max += nMax.charAt(i) - '0';
         }
-        maxCapacity = max;
+        deliveryMaxCapacity = max;
     }
 
     public String getName() {
@@ -64,12 +66,18 @@ public class DeliveryPerson implements Comparable<DeliveryPerson>,Serializable{
     public int getID() {return delivererID;}
 
     public void addDelivery() throws HandsFullException{
-        if (deliveryCounter == deliveryMaxCapacity)
+        if (deliveryCounter == deliveryMaxCapacity) {
             throw new HandsFullException(delivererID);
+        } else{
+            deliveryCounter++;
+        }
     }
     public void removeDelivery() throws NotFoundException{
-        if (deliveryCounter == 0)
-            throw new NotFoundException("Delivery person '"+delivererID+"' has no deliveries");
+        if (deliveryCounter == 0) {
+            throw new NotFoundException("Delivery person '" + delivererID + "' has no deliveries");
+        } else{
+            deliveryCounter--;
+        }
     }
 
     // toString

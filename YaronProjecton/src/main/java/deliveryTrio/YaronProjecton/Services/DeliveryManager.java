@@ -16,6 +16,7 @@ import deliveryTrio.YaronProjecton.Services.DeliveryPerson.DeliveryPersonCollect
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,20 +27,25 @@ public class DeliveryManager {
     @NotNull
     private final DataAccessObject dao;
     private int deliveryID, deliveryPersonID;
-    public DeliveryManager(DataAccessObject accessObj) {
+    private int startingDeliveryID;
+    private int startingDeliveryPersonID;
+    public DeliveryManager(DataAccessObject accessObj, @Value("${manager.startingDeliveryID}") int startingDeliveryID, @Value("${manager.startingDeliveryPersonID}") int startingDeliveryPersonID, @Value("${manager.deliveryPersonsLimit}") int deliveryPersonsLimit) {
         this.dao = accessObj;
+        this.startingDeliveryID = startingDeliveryID;
+        this.startingDeliveryPersonID = startingDeliveryPersonID;
+        DeliveryPerson.defaultMaxCapacity = deliveryPersonsLimit;
     }
     @PostConstruct
     public void loadRunningIDs() {
         try {
             deliveryID = ((Delivery)dao.getAllDeliveries().getList().getLast()).getID() + 1;
         } catch (NotFoundException e) {
-            deliveryID = 1000; //base id
+            deliveryID = startingDeliveryID; //base id
         }
         try {
             deliveryPersonID = ((DeliveryPerson)dao.getAllDeliveryPersons().getList().getLast()).getID() + 1;
         } catch (NotFoundException e) {
-            deliveryPersonID = 10000000; // base id
+            deliveryPersonID = startingDeliveryPersonID; // base id
         }
     }
 
@@ -51,8 +57,7 @@ public class DeliveryManager {
         else {
             for (int i = 0; i < lst.size(); i++) {
                 temp = lst.get(i);
-                if (temp.getDeliveryCounter() < temp.getDeliveryMaxCapacity()
-                        && temp.getCity() == delivery.getDestination()) {
+                if (temp.getDeliveryCounter() < temp.getDeliveryMaxCapacity() && temp.getCity().equals(delivery.getDestination())) {
                     temp.addDelivery();
                     delivery.setRef(temp);
                     return true;
