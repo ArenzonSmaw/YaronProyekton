@@ -1,12 +1,10 @@
-package deliveryTrio.YaronProjecton;
+package deliveryTrio.YaronProjecton.Services;
 
 import deliveryTrio.YaronProjecton.Entities.Delivery;
 import deliveryTrio.YaronProjecton.Entities.DeliveryPerson;
 import deliveryTrio.YaronProjecton.Exceptions.DataSavingProblems.CantAccessDataException;
 import deliveryTrio.YaronProjecton.Exceptions.DataSavingProblems.CantUpdateDataException;
 import deliveryTrio.YaronProjecton.Exceptions.HandsFullException;
-import deliveryTrio.YaronProjecton.Exceptions.InvalidInfo.InvalidDeliveryInfoException;
-import deliveryTrio.YaronProjecton.Exceptions.InvalidInfo.InvalidDeliveryPersonInfoException;
 import deliveryTrio.YaronProjecton.Exceptions.NoAvailableDeliveryPersonException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.DeliveryNotFoundException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.DeliveryPersonNotFoundException;
@@ -18,10 +16,8 @@ import deliveryTrio.YaronProjecton.Services.DeliveryPerson.DeliveryPersonCollect
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.NotActiveException;
 import java.util.ArrayList;
 
 
