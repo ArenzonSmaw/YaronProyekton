@@ -2,6 +2,6 @@ package deliveryTrio.YaronProjecton.Exceptions;
 
 public class UnfinishedDutyException extends Exception {
     public UnfinishedDutyException(int deliverymanID) {
-        super("Cannot modify delivery person '" + deliverymanID + "' because he has packages he has not yet delivered.");
+        super("Cannot modify / fire delivery person '" + deliverymanID + "' because he has packages he has not yet delivered.");
     }
 }

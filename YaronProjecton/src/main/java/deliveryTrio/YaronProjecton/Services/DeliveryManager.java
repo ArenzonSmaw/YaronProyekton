@@ -5,6 +5,7 @@ import deliveryTrio.YaronProjecton.Entities.DeliveryPerson;
 import deliveryTrio.YaronProjecton.Exceptions.DataSavingProblems.CantAccessDataException;
 import deliveryTrio.YaronProjecton.Exceptions.DataSavingProblems.CantUpdateDataException;
 import deliveryTrio.YaronProjecton.Exceptions.HandsFullException;
+import deliveryTrio.YaronProjecton.Exceptions.InvalidInputException;
 import deliveryTrio.YaronProjecton.Exceptions.NoAvailableDeliveryPersonException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.DeliveryNotFoundException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.DeliveryPersonNotFoundException;
@@ -15,6 +16,7 @@ import deliveryTrio.YaronProjecton.Services.DataAccess.IDAO;
 import deliveryTrio.YaronProjecton.Services.Delivery.DeliveryCollection;
 import deliveryTrio.YaronProjecton.Services.DeliveryPerson.DeliveryPersonCollection;
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -67,8 +69,11 @@ public class DeliveryManager {
         throw new NoAvailableDeliveryPersonException(delivery.getID(), delivery.getDestination());
     }
 
-    public boolean AddDeliveryPerson(String name, String city) {
+    public boolean AddDeliveryPerson(String name, String city) throws InvalidInputException {
         DeliveryPerson temp = new DeliveryPerson(name, city, deliveryPersonID);
+
+        ValidatorUtil.isValid(temp);
+
         deliveryPersonID++;
         try {
             dao.add(temp);
@@ -86,8 +91,10 @@ public class DeliveryManager {
         }
         return true;
     }
-    public boolean AddDelivery(double weight, String city, String CustID) throws NotFoundException, NoAvailableDeliveryPersonException, CantUpdateDataException, CantAccessDataException{
+    public boolean AddDelivery(double weight, String city, String CustID) throws InvalidInputException, NotFoundException, NoAvailableDeliveryPersonException, CantUpdateDataException, CantAccessDataException{
         Delivery temp = new Delivery(weight, city, CustID, deliveryID);
+        ValidatorUtil.isValid(temp);
+
         deliveryID++;
         try {
             assignDelivery(temp);
@@ -101,18 +108,18 @@ public class DeliveryManager {
         return true;
     }
 
-    public DeliveryCollection getDeliveries() {
+    public DeliveryCollection getDeliveries() throws NotFoundException{
         try {
             return dao.getAllDeliveries();
         } catch (NotFoundException e) {
-            return new DeliveryCollection();
+            throw new NotFoundException("There are no deliveries right now.");
         }
     }
-    public DeliveryPersonCollection getDeliveryPersons() {
+    public DeliveryPersonCollection getDeliveryPersons() throws NotFoundException {
         try {
             return dao.getAllDeliveryPersons();
         } catch (NotFoundException e) {
-            return new DeliveryPersonCollection();
+            throw new NotFoundException("There are no delivery persons right now.");
         }
     }
 
@@ -162,7 +169,7 @@ public class DeliveryManager {
 
         }
     }
-    public void modifyDeliveryPerson(int id, String field, String newVal) throws  UnfinishedDutyException, NotFoundException {
+    public void modifyDeliveryPerson(int id, String field, String newVal) throws  UnfinishedDutyException, NotFoundException, InvalidInputException {
         DeliveryPerson temp = getDeliveryPerson(id);
         switch (field) {
             case "city":
@@ -179,5 +186,6 @@ public class DeliveryManager {
             default:
                 throw new RuntimeException("halas with the fake fields");
         }
+        ValidatorUtil.isValid(temp);
     }
 }

@@ -4,16 +4,18 @@ package deliveryTrio.YaronProjecton.Entities;
 import deliveryTrio.YaronProjecton.Exceptions.HandsFullException;
 import deliveryTrio.YaronProjecton.Exceptions.NotFound.NotFoundException;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 
 public class DeliveryPerson implements Comparable<DeliveryPerson>,Serializable{
     private int delivererID; // when creating the object is empty, after added to the data structure id will be given
-    @NotNull
+    @NotBlank(message = "Delivery person must have a name")
     private String name;
-    @NotNull
-    @Min(value=3)
+    @NotBlank(message = "Delivery person must have a city")
+    @Size(min=3, message = "City must be at least 3 characters long")
     private String  city;
     private int deliveryMaxCapacity; // add to properties
     private int deliveryCounter = 0;

@@ -6,6 +6,7 @@ import deliveryTrio.YaronProjecton.Exceptions.InvalidInputException;
 import deliveryTrio.YaronProjecton.Services.Delivery.DeliveryCollection;
 import deliveryTrio.YaronProjecton.Services.DeliveryManager;
 import deliveryTrio.YaronProjecton.Services.DeliveryPerson.DeliveryPersonCollection;
+import deliveryTrio.YaronProjecton.Services.ValidatorUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.Scanner;
@@ -46,27 +47,45 @@ public class DeliveryCLI {
             }
 
             try{
+                boolean valid;
                 switch (selected){
                     case ADD_DELIVERY_PERSON:
-                        System.out.println("Enter name:");
-                        String name = scanner.nextLine();
-                        System.out.println("Enter city:");
-                        String city = scanner.nextLine();
-                        if (mng.AddDeliveryPerson(name, city)){
-                            System.out.println("Successfully added the delivery person '" + name + "'.");
-                        }
+                        String name, city;
+                        do {
+                            System.out.println("Enter name:");
+                            name = scanner.nextLine();
+                            System.out.println("Enter city:");
+                            city = scanner.nextLine();
+                            try {
+                                valid = mng.AddDeliveryPerson(name, city);
+                            } catch (InvalidInputException e) {
+                                System.out.println(e.getMessage());
+                                valid = false;
+                            }
+                        } while (!valid);
+
+                        System.out.println("Successfully added the delivery person '" + name + "'.");
                         break;
                     case ADD_DELIVERY:
-                        System.out.println("Enter delivery weight:");
-                        double weight = scanner.nextDouble();
-                        scanner.nextLine();
-                        System.out.println("Enter destination city:");
-                        String destinationCity = scanner.nextLine();
-                        System.out.println("Enter customer ID:");
-                        String customerID = scanner.nextLine();
-                        if (mng.AddDelivery(weight, destinationCity, customerID)){
-                            System.out.println("Successfuly added delivery.");
-                        }
+                        String destinationCity, customerID;
+                        double weight;
+                        do {
+                            System.out.println("Enter delivery weight:");
+                            weight = scanner.nextDouble();
+                            scanner.nextLine();
+                            System.out.println("Enter destination city:");
+                            destinationCity = scanner.nextLine();
+                            System.out.println("Enter customer ID:");
+                            customerID = scanner.nextLine();
+                            try {
+                                valid = mng.AddDelivery(weight, destinationCity, customerID);
+                            } catch (InvalidInputException e) {
+                                System.out.println(e.getMessage());
+                                valid = false;
+                            }
+                        } while (!valid);
+
+                        System.out.println("Successfuly added delivery.");
                         break;
                     case PRINT_DELIVERIES:
                         System.out.println("All deliveries:");
@@ -205,7 +224,7 @@ public class DeliveryCLI {
                 selected = Option.STOP;
                 break;
             default:
-                throw new InvalidInputException(input);
+                throw new InvalidInputException(input,"");
         }
         return selected;
     }

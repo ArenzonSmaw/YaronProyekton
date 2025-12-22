@@ -1,18 +1,21 @@
 package deliveryTrio.YaronProjecton.Entities;
 
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 
 public class Delivery implements Comparable<Delivery>, Serializable {
     private int deliveryNo;
-    @NotNull
+    @NotNull(message = "Delivery must be weighed")
+    @Min(value=0)
     private double weight;
-    @NotNull
-    @Min(value=3)
+    @NotBlank(message = "Delivery must have a destination")
+    @Size(min=3, message = "Destination must be at least 3 characters")
     private String destination;
-    @NotNull
+    @NotNull(message = "Delivery must have a customer")
     private String customerID;
     private DeliveryPerson ref;
     // static attributes
