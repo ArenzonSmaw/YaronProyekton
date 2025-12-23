@@ -1,14 +1,15 @@
 package deliveryTrio.YaronProjecton;
 
-import deliveryTrio.YaronProjecton.Entities.Delivery;
-import deliveryTrio.YaronProjecton.Entities.DeliveryPerson;
-import deliveryTrio.YaronProjecton.Exceptions.InvalidInputException;
-import deliveryTrio.YaronProjecton.Services.Delivery.DeliveryCollection;
-import deliveryTrio.YaronProjecton.Services.DeliveryManager;
-import deliveryTrio.YaronProjecton.Services.DeliveryPerson.DeliveryPersonCollection;
-import deliveryTrio.YaronProjecton.Services.ValidatorUtil;
+import deliveryTrio.YaronProjecton.entities.Delivery;
+import deliveryTrio.YaronProjecton.entities.DeliveryPerson;
+import deliveryTrio.YaronProjecton.exceptions.InvalidInputException;
+import deliveryTrio.YaronProjecton.dataAccess.delivery.DeliveryCollection;
+import deliveryTrio.YaronProjecton.services.DeliveryManager;
+import deliveryTrio.YaronProjecton.dataAccess.deliveryPerson.DeliveryPersonCollection;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -40,7 +41,7 @@ public class DeliveryCLI {
         while (running){
             Option selected = null;
             try{
-                selected = ShowMenu();
+                selected = showMenu();
             } catch (InvalidInputException e){
                 System.out.println(e.getMessage());
                 continue;
@@ -57,7 +58,7 @@ public class DeliveryCLI {
                             System.out.println("Enter city:");
                             city = scanner.nextLine();
                             try {
-                                valid = mng.AddDeliveryPerson(name, city);
+                                valid = mng.addDeliveryPerson(name, city);
                             } catch (InvalidInputException e) {
                                 System.out.println(e.getMessage());
                                 valid = false;
@@ -78,7 +79,7 @@ public class DeliveryCLI {
                             System.out.println("Enter customer ID:");
                             customerID = scanner.nextLine();
                             try {
-                                valid = mng.AddDelivery(weight, destinationCity, customerID);
+                                valid = mng.addDelivery(weight, destinationCity, customerID);
                             } catch (InvalidInputException e) {
                                 System.out.println(e.getMessage());
                                 valid = false;
@@ -113,16 +114,24 @@ public class DeliveryCLI {
                         int deliveryPersonID = scanner.nextInt();
                         scanner.nextLine();
                         DeliveryPerson delPer = mng.getDeliveryPerson(deliveryPersonID);
+                        ArrayList<Delivery> arrayListOfDeliveiriesWhichTheDelivererReferencedBydelperIsDeliveringByHimselfWhichWillBeUsedToPrintAllTheDeliveriesOfSaidDeliverPersonWhenUserDemandsToShowDetailsOfDeliveryPerson = mng.getDeliveriesOfPreson(deliveryPersonID);
                         System.out.println(delPer.toString());
+                        for(Delivery deliveryThatIsInsidearrayLIstofdeliveirieswhichTheDelivererReferencedBydelperIsDeliveringByHimselfWhichWillBeUsedToPrintAllTheDeliveriesOfSaidDeliverPersonWhenUserDemandsToShowDetailsOfDeliveryPerson : arrayListOfDeliveiriesWhichTheDelivererReferencedBydelperIsDeliveringByHimselfWhichWillBeUsedToPrintAllTheDeliveriesOfSaidDeliverPersonWhenUserDemandsToShowDetailsOfDeliveryPerson) {
+                            System.out.println(deliveryThatIsInsidearrayLIstofdeliveirieswhichTheDelivererReferencedBydelperIsDeliveringByHimselfWhichWillBeUsedToPrintAllTheDeliveriesOfSaidDeliverPersonWhenUserDemandsToShowDetailsOfDeliveryPerson);
+                        }
                         break;
                     case MODIFY_DELIVERY:
                         System.out.println("Enter delivery number:");
                         deliveryNum = scanner.nextInt();
                         scanner.nextLine();
-                        System.out.println("Enter field name to modify:");
+                        System.out.println("Enter field name to modify (destination / ref):");
                         String deliveryField = scanner.nextLine();
-                        System.out.println("Enter new value:");
-                        String deliveryValue = scanner.nextLine();
+                        String deliveryValue;
+                        if(deliveryField.compareTo("ref") != 0) {
+                            System.out.println("Enter new value:");
+                            deliveryValue = scanner.nextLine();
+                        }
+                        else deliveryValue = null;
                         mng.modifyDelivery(deliveryNum, deliveryField, deliveryValue);
                         System.out.println("Modified delivery number " + deliveryNum + ".");
                         break;
@@ -130,7 +139,7 @@ public class DeliveryCLI {
                         System.out.println("Enter delivery person ID:");
                         deliveryPersonID = scanner.nextInt();
                         scanner.nextLine();
-                        System.out.println("Enter field name to modify:");
+                        System.out.println("Enter field name to modify (city / name / max capacity):");
                         String deliveryPersonField = scanner.nextLine();
                         System.out.println("Enter new value:");
                         String deliveryPersonValue = scanner.nextLine();
@@ -167,7 +176,7 @@ public class DeliveryCLI {
 
     }
 
-    public static Option ShowMenu() throws InvalidInputException{
+    public static Option showMenu() throws InvalidInputException{
         System.out.println("----------------------------------------------");
         System.out.println("Choose an option by typing a number:");
         System.out.println("1. Add a delivery person to the system.");
@@ -182,10 +191,10 @@ public class DeliveryCLI {
         System.out.println("10. Report a delivery as delivered.");
         System.out.println("0. Stop the system.");
 
-        return ReceiveChoice();
+        return receiveChoice();
     }
 
-    public static Option ReceiveChoice() throws InvalidInputException {
+    public static Option receiveChoice() throws InvalidInputException {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
         Option selected = null;
