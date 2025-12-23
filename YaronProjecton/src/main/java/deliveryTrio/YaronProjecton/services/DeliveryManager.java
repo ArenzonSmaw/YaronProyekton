@@ -16,6 +16,7 @@ import deliveryTrio.YaronProjecton.dataAccess.IDAO;
 import deliveryTrio.YaronProjecton.dataAccess.delivery.DeliveryCollection;
 import deliveryTrio.YaronProjecton.dataAccess.deliveryPerson.DeliveryPersonCollection;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -81,13 +82,9 @@ public class DeliveryManager {
             System.out.println(e.getMessage());
             return false;
         }
-        try {
-            dao.update();
-        } catch (CantAccessDataException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-            return false;
-        }
+
+        assignForgottenDeliveries(); // for the chance new delivery person can handle unassigned deliveries
+
         return true;
     }
     public boolean addDelivery(double weight, String city, String CustID) throws InvalidInputException, NotFoundException, NoAvailableDeliveryPersonException, CantUpdateDataException, CantAccessDataException{
@@ -96,11 +93,9 @@ public class DeliveryManager {
 
         deliveryID++;
         try {
+            dao.add(temp);
             assignDelivery(temp);
 
-            dao.add(temp);
-
-            dao.update();
         } catch (HandsFullException e) {
             throw new NoAvailableDeliveryPersonException(deliveryID-1, city);
         }
@@ -135,20 +130,13 @@ public class DeliveryManager {
         DeliveryPerson temp = getDeliveryPerson(id);
         if(temp.getDeliveryCounter() > 0)
             throw new UnfinishedDutyException(id);
-        try{
-            dao.remove(temp);
-        } catch (DeliveryNotFoundException e) {
-            //ummmm.... not a bug its an easter egg
-        }
+        dao.remove(temp);
     }
-    public void delivered(int number) throws NotFoundException, CantUpdateDataException{
+    public void delivered(int number) throws NotFoundException, CantUpdateDataException {
         Delivery temp = getDelivery(number);
-        try {
-            temp.getRef().removeDelivery();
-            dao.remove(temp);
-        } catch (DeliveryPersonNotFoundException e) {
-            //"its not a bug its a feature" - Jesus H. Christ
-        }
+
+        temp.getRef().removeDelivery();
+        dao.remove(temp);
     }
 
     public void modifyDelivery(int num, String field, String newVal) throws HandsFullException, NoAvailableDeliveryPersonException, NotFoundException {
@@ -157,17 +145,25 @@ public class DeliveryManager {
         switch (field) {
             case "destination":
                 temporaryDelivery.setDestination(newVal);
-                previousDeliveryPerson.removeDelivery();// decreases deliveryCount
+                previousDeliveryPerson.removeDelivery();  // decreases deliveryCount
                 temporaryDelivery.setRef(null);
                 assignDelivery(temporaryDelivery);
                 break;
             case "ref":
                 try {
-                    previousDeliveryPerson.removeDelivery();
                     String lock = previousDeliveryPerson.getCity();
                     previousDeliveryPerson.setCity("administrativeleave");
-                    assignDelivery(temporaryDelivery);
-                    previousDeliveryPerson.setCity(lock);
+                    try {
+                        assignDelivery(temporaryDelivery);
+                    } catch (NoAvailableDeliveryPersonException e) {
+                        temporaryDelivery.setRef(previousDeliveryPerson);
+                    } finally {
+                        previousDeliveryPerson.setCity(lock);
+                        if(!temporaryDelivery.getRef().equals(previousDeliveryPerson))
+                            previousDeliveryPerson.removeDelivery();
+                        else
+                            throw new NoAvailableDeliveryPersonException(num,lock);
+                    }
                 } catch (NullPointerException e) {
                     assignDelivery(temporaryDelivery);
                 }
@@ -195,5 +191,23 @@ public class DeliveryManager {
                 throw new RuntimeException("halas with the fake fields");
         }
         ValidatorUtil.isValid(temp);
+    }
+    @PreDestroy
+    public void assignForgottenDeliveries() {
+        try {
+            DeliveryCollection deliveries = dao.getAllDeliveries();
+
+            for (Delivery delivery : deliveries) {
+                if (delivery.getRef() == null) {
+                    try {
+                        assignDelivery(delivery);
+                    } catch (Exception e) {
+                        //Unlucky
+                    }
+                }
+            }
+        } catch (NotFoundException e) {
+            //at least we tried eh?
+        }
     }
 }
