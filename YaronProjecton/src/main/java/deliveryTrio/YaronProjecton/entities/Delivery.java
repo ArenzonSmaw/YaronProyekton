@@ -4,20 +4,25 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+@Data
+@NoArgsConstructor
 public class Delivery implements Comparable<Delivery>, Serializable {
     private int deliveryNo;
     @NotNull(message = "delivery must be weighed")
     @Min(value=0)
-    private double weight;
+    private Double weight = 0.0;
     @NotBlank(message = "delivery must have a destination")
     @Size(min=3, message = "Destination must be at least 3 characters")
     private String destination;
-    @NotNull(message = "delivery must have a customer")
+    @NotBlank(message = "delivery must have a customer")
     private String customerID;
     private DeliveryPerson ref;
+    private int refId;
     // static attributes
     private static final long serialVersionUID = 2L;
 

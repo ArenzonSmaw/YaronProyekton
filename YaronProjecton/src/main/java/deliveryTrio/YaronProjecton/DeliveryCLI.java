@@ -70,6 +70,7 @@ public class DeliveryCLI {
                     case ADD_DELIVERY:
                         String destinationCity, customerID;
                         double weight;
+                        Delivery delivery = new Delivery();
                         do {
                             System.out.println("Enter delivery weight:");
                             weight = scanner.nextDouble();
@@ -78,8 +79,11 @@ public class DeliveryCLI {
                             destinationCity = scanner.nextLine();
                             System.out.println("Enter customer ID:");
                             customerID = scanner.nextLine();
+                            delivery.setDestination(destinationCity);
+                            delivery.setWeight(weight);
+                            delivery.setCustomerID(customerID);
                             try {
-                                valid = mng.addDelivery(weight, destinationCity, customerID);
+                                valid = mng.addDelivery(delivery);
                             } catch (InvalidInputException e) {
                                 System.out.println(e.getMessage());
                                 valid = false;

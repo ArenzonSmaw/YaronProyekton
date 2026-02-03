@@ -87,17 +87,36 @@ public class DeliveryManager {
 
         return true;
     }
-    public boolean addDelivery(double weight, String city, String CustID) throws InvalidInputException, NotFoundException, NoAvailableDeliveryPersonException, CantUpdateDataException, CantAccessDataException{
-        Delivery temp = new Delivery(weight, city, CustID, deliveryID);
-        ValidatorUtil.isValid(temp);
-
-        deliveryID++;
+    public boolean addDeliveryPerson(DeliveryPerson deliverer) throws InvalidInputException {
+        if (deliverer.getDelivererID() == 0) {
+            deliverer.setDelivererID(deliveryPersonID);
+            deliveryPersonID++;
+        }
         try {
-            dao.add(temp);
-            assignDelivery(temp);
+            dao.add(deliverer);
+        } catch (CantUpdateDataException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+        assignForgottenDeliveries(); // for the chance new delivery person can handle unassigned deliveries
+
+        return true;
+    }
+    public boolean addDelivery(Delivery delivery) throws InvalidInputException, NotFoundException, NoAvailableDeliveryPersonException, CantUpdateDataException, CantAccessDataException{
+        System.out.println(delivery);
+        if (delivery.getDeliveryNo() == 0) {
+            delivery.setDeliveryNo(deliveryID);
+            deliveryID++;
+        }
+        try {
+            dao.add(delivery);
+            if (delivery.getRef()==null)
+                assignDelivery(delivery);
 
         } catch (HandsFullException e) {
-            throw new NoAvailableDeliveryPersonException(deliveryID-1, city);
+            throw new NoAvailableDeliveryPersonException(deliveryID-1, delivery.getDestination());
         }
         return true;
     }
@@ -134,8 +153,8 @@ public class DeliveryManager {
     }
     public void delivered(int number) throws NotFoundException, CantUpdateDataException {
         Delivery temp = getDelivery(number);
-
-        temp.getRef().removeDelivery();
+        if(temp.getRef() != null)
+            temp.getRef().removeDelivery();
         dao.remove(temp);
     }
 

@@ -5,9 +5,13 @@ import deliveryTrio.YaronProjecton.exceptions.HandsFullException;
 import deliveryTrio.YaronProjecton.exceptions.notFound.NotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+@Data
+@NoArgsConstructor
 public class DeliveryPerson implements Comparable<DeliveryPerson>,Serializable{
     private int delivererID; // when creating the object is empty, after added to the data structure id will be given
     @NotBlank(message = "delivery person must have a name")

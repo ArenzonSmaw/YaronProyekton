@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" style="height: 100%; margin: 0;"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body th:style="|background-image: url('@{/image/delivery-instalator-2.png}');background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                min-height: 100vh;
+                margin: 0;
+                display: flex;
+                flex-direction: column;|">
+<style>
+    .navbar.row {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    }
+    /* Slim navbar */
+.navbar {
+    padding-top: 0.25rem;  /* top padding */
+    padding-bottom: 0.25rem; /* bottom padding */
+    font-size: 0.9rem; /* slightly smaller text */
+}
+
+/* Slim navbar items */
+.navbar-item {
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+}
+.navbar-item button {
+    margin-left: 0.3rem;
+    margin-right: 0.3rem;
+    padding: 0.25rem 0.6rem; /* reduce button height */
+    font-size: 0.85rem;
+}
+.gray-fill {
+    background-color: rgba(240, 240, 240, 0.9); /* light gray with slight transparency */
+    border: 1px solid #ddd;  /* keep subtle border */
+    color: #333;  /* dark text */
+}
+    .content-section {
+        background-color: rgba(248, 251, 255, 0.9); /* slightly cold white */
+    padding: 1.5rem;      /* nice breathing space */
+    border-radius: 0.5rem; /* rounded corners */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05); /* subtle depth */
+    }
+    .nav-tabs .nav-link {
+    height: 100%;
+}
+    .nav-tabs .tab-link {
+    padding: 0;         /* remove default padding */
+    border-radius: 0;   /* sharp rectangle */
+    text-align: center; /* center text */
+}
+</style>
+<div role="navigation" class="container-fluid m-0 p-0" style="background-color: rgba(210, 120, 60, 0.97); padding:0; border-radius:0;">
+    <ul class="navbar nav">
+        <li class="nav-item navbar-brand justify-content-start">
+            <h3>DeliveryTrio</h3>
+        </li>
+        <li class="nav-item navbar-item ">
+            <ul class="nav nav-tabs nav-fill">
+                <li class="nav-item">
+                    <a th:href="@{/ShowDeliveries}" class="nav-link px-4 py-3"  th:classappend="${title == 'deliveries'} ? ' active bg-light text-dark ' : ' bg-orange-400 text-white'">Deliveries</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/ShowDeliveryPersons}" class="nav-link px-4 py-3"  th:classappend="${title == 'deliverers'} ? ' active bg-light text-dark ' : ' bg-orange-400 text-white'">Delivery Persons</a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item navbar-item ">
+            <a type="button" class="btn btn-outline-primary gray-fill" th:href="@{/addDelivery}">Add Delivery</a>
+        </li>
+        <li class="nav-item navbar-item ">
+            <a type="button" class="btn btn-outline-primary gray-fill" th:href="@{/addDeliveryPerson}">Add Delivery Person</a>
+        </li>
+        <li class="nav-item navbar-item " style="color:white">
+            <h6 th:text="${username != null} ? 'Hello, '+${username}+'!' : 'Welcome, Guest!'">fail</h6>
+        </li>
+        <li class="nav-item navbar-item ">
+            <button type="button" class="btn btn-outline-danger gray-fill">Log Out</button>
+        </li>
+    </ul>
+</div>
+
+<div class="container mt-4 content-section">
+    <section class="content-section col-12" layout:fragment="content">
+        <p>Page content goes here</p>
+    </section>
+</div>
+
+<footer class="footer-strip mt-auto" style=" background-color: rgb(240, 240, 240);
+                                                width: 100%; border-top: 1px solid rgba(0, 0, 0, 0.08);">
+    <div class="container text-center py-3">
+        <span class="text-muted">
+            © 2026 Delivery Trio Inc. - plumbering and delivering.
+        </span>
+    </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

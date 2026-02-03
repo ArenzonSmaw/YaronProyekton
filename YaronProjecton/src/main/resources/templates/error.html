@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" style="height: 100%; margin: 0;"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{master.html}" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <h1 th:text="${errorTitle}"></h1>
+    <p th:text="${errorMessage}"></p>
+    <button type="button" onclick="history.back()">Back</button>
+</div>
+</body>
+</html>
