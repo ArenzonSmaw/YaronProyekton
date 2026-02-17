@@ -82,10 +82,10 @@
             <a type="button" class="btn btn-outline-primary gray-fill" th:href="@{/addDeliveryPerson}">Add Delivery Person</a>
         </li>
         <li class="nav-item navbar-item " style="color:white">
-            <h6 th:text="${username != null} ? 'Hello, '+${username}+'!' : 'Welcome, Guest!'">fail</h6>
+            <h6 th:text="${session.user.username != null} ? 'Hello, '+${session.user.username}+'!' : 'Welcome, Guest!'">fail</h6>
         </li>
         <li class="nav-item navbar-item ">
-            <button type="button" class="btn btn-outline-danger gray-fill">Log Out</button>
+            <a th:href="@{/logout}" class="btn btn-outline-danger gray-fill">Log Out</a>
         </li>
     </ul>
 </div>

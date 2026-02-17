@@ -33,7 +33,7 @@ public class DeliveryCLI {
 
 	public static void main(String[] args) {
         var context=SpringApplication.run(DeliveryCLI.class, args);
-        DeliveryManager mng = context.getBean("manager", DeliveryManager.class);
+        /*DeliveryManager mng = context.getBean("manager", DeliveryManager.class);
         Scanner scanner = new Scanner(System.in);
 
         Boolean running = true;
@@ -177,6 +177,7 @@ public class DeliveryCLI {
                 scanner.nextLine();
             }
         }
+        */
 
     }
 
