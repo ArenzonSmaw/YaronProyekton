@@ -1,10 +1,10 @@
-package deliveryTrio.YaronProjecton;
+package deliveryTrio.YaronProjecton.conrollers;
 
 import deliveryTrio.YaronProjecton.entities.Delivery;
 import deliveryTrio.YaronProjecton.entities.DeliveryPerson;
 import deliveryTrio.YaronProjecton.exceptions.NoAvailableDeliveryPersonException;
+import deliveryTrio.YaronProjecton.exceptions.UnfinishedDutyException;
 import deliveryTrio.YaronProjecton.exceptions.notFound.DeliveryNotFoundException;
-import deliveryTrio.YaronProjecton.exceptions.notFound.DeliveryPersonNotFoundException;
 import deliveryTrio.YaronProjecton.exceptions.notFound.NotFoundException;
 import deliveryTrio.YaronProjecton.services.DeliveryManager;
 import jakarta.validation.Valid;
@@ -44,6 +44,12 @@ public class DeliveryWebController {
 
         return "error";
     }*/
+
+    @RequestMapping("/")
+    public String homePage()
+    {
+        return "redirect:ShowDeliveries";
+    }
     @RequestMapping("/ShowDeliveryPersons")
     public String showDeliverers(Model model) throws Exception
     {
@@ -158,18 +164,44 @@ public class DeliveryWebController {
     }
 
     @RequestMapping("/modifyDeliveryPerson")
-    public String modifyDeliverer(@Valid @RequestAttribute("id") int id, Model model)
+    public String modifyDeliverer(@RequestParam("id") int id, Model model)
     {
         return "success";
     }
     @RequestMapping("/showAllDeliveries")
-    public String showAllDeliveries(@Valid @RequestAttribute("id") int id, Model model)
+    public String showAllDeliveries(@RequestParam("id") int id, Model model)
     {
+        /*Delivery col;
+        try {
+            col = DlvManager.getDeliveriesOfPreson(id);
+        } catch (NotFoundException e) {
+            model.addAttribute("message", "delivery person has no deliveries");
+        }
+        model.addAttribute("tbData", col);
+        model.addAttribute("dlvNum", "");*/
+
         return "success";
     }
     @RequestMapping("/fire")
-    public String fireDeliverer(@Valid @RequestAttribute("id") int id, Model model)
+    public String fireDeliverer(@RequestParam("id") int id, Model model)
     {
+        DeliveryPerson delper;
+        try {
+            delper = DlvManager.getDeliveryPerson(id);
+            DlvManager.fireDeliveryPerson(id);
+        } catch (UnfinishedDutyException e) {
+            model.addAttribute("errorTitle", "Cannot Fire Delivery Person");
+            model.addAttribute("errorMessage", "Delivery person has unfinished delivery business.");
+            return "error";
+        } catch (Exception e) {
+            model.addAttribute("errorTitle", "Couldn't Fire Delivery Person ");
+            model.addAttribute("errorMessage", "error message: " + e.getMessage());
+            return "error";
+        }
+        model.addAttribute("type", "deliverer");
+        model.addAttribute("deliveryperson", delper);
+        model.addAttribute("action", "fired");
+        
         return "success";
     }
 

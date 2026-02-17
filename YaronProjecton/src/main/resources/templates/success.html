@@ -24,7 +24,10 @@
                 <p th:case="'deliverer'" th:object="${deliveryperson}" th:with="action = ${action}" th:text="'Delivery person: ' + *{name} + ', of city: ' + *{city} + ', has been ' + ${action} + ' successfully!'">dliverer success message</p>
                 </br><p th:if="${note != null}" th:text="${note}"></p>
             </div>
-            <img th:if="${type != null}" class="col" th:src="@{/image/instalator.png}" alt="cool plumber picture" >
+            <img th:if="${type == 'deliverer' && action == 'fired'}" class="col" th:src="@{/image/delivery-instalator-3.png}" alt="sad delivery plumber picture" >
+            <img th:if="${type == 'deliverer' && action == 'added'}" class="col" th:src="@{/image/delivery-instalator-4.png}" alt="cool shark plumber picture" >
+            <img th:if="${type == 'delivery' && action == 'added'}" class="col" th:src="@{/image/instalator.png}" alt="cool plumber picture" >
+            <img th:if="${type == 'delivery' && action == 'reported delivered'}" class="col" th:src="@{/image/delivery-instalator-1.png}" alt="cool delivery guy plumber picture" >
         </div>
         <div th:case="*" class="row">
         <p class="col-5 justify-content-start">uhmm no object seems to be updated so heres a cool pic of a shark plumber</p>
