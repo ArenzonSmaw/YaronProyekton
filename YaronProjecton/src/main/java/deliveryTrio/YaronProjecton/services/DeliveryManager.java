@@ -145,10 +145,13 @@ public class DeliveryManager {
         return dao.getDeliveryById(num);
     }
 
-    public void fireDeliveryPerson(int id) throws UnfinishedDutyException, NotFoundException, CantUpdateDataException{
+    public void fireDeliveryPerson(int id) throws UnfinishedDutyException, NotFoundException, CantUpdateDataException {
         DeliveryPerson temp = getDeliveryPerson(id);
-        if(temp.getDeliveryCounter() > 0)
+        if (temp.getDeliveryCounter() > 0) {
+            System.out.println(temp.getDeliveryCounter());
             throw new UnfinishedDutyException(id);
+        }
+
         dao.remove(temp);
     }
     public void delivered(int number) throws NotFoundException, CantUpdateDataException {
@@ -186,6 +189,12 @@ public class DeliveryManager {
                 } catch (NullPointerException e) {
                     assignDelivery(temporaryDelivery);
                 }
+                break;
+            case "weight":
+                temporaryDelivery.setWeight(Double.parseDouble(newVal));
+                break;
+            case "customerID":
+                temporaryDelivery.setCustomerID(newVal);
                 break;
             default:
                 throw new RuntimeException("wallahi the field is lo relevanti");

@@ -1,5 +1,6 @@
 package deliveryTrio.YaronProjecton.conrollers;
 
+import deliveryTrio.YaronProjecton.dataAccess.delivery.DeliveryCollection;
 import deliveryTrio.YaronProjecton.entities.Delivery;
 import deliveryTrio.YaronProjecton.entities.DeliveryPerson;
 import deliveryTrio.YaronProjecton.exceptions.NoAvailableDeliveryPersonException;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @Controller
 @ControllerAdvice
@@ -51,22 +54,34 @@ public class DeliveryWebController {
         return "redirect:ShowDeliveries";
     }
     @RequestMapping("/ShowDeliveryPersons")
-    public String showDeliverers(Model model) throws Exception
+    public String showDeliverers(Model model)
     {
         model.addAttribute("username", "User");
         model.addAttribute("title", "deliverers");
-        model.addAttribute("tbData", DlvManager.getDeliveryPersons());
+        try {
+            model.addAttribute("tbData", DlvManager.getDeliveryPersons());
+        } catch (NotFoundException e) {
+            model.addAttribute("message", e.getMessage());
+        }
         return "delivery-persons";
     }
 
     @RequestMapping("/ShowDeliveries")
-    public String showDeliveries(Model model) throws Exception
+    public String showDeliveries(Model model)
     {
         model.addAttribute("username", "User");
         model.addAttribute("title", "deliveries");
-
-        model.addAttribute("tbData", DlvManager.getDeliveries());
-        model.addAttribute("dlvNum", "");
+        model.addAttribute("header", "All Deliveries");
+        DeliveryCollection deliveries;
+        try {
+            deliveries = DlvManager.getDeliveries();
+            if (deliveries != null) {
+                model.addAttribute("tbData", deliveries);
+                model.addAttribute("dlvNum", deliveries.getList().size());
+            }
+        } catch (NotFoundException e) {
+            model.addAttribute("message", "There are no deliveries yet");
+        }
 
         return "deliveries";
     }
@@ -75,21 +90,31 @@ public class DeliveryWebController {
     public String addDelivery(Model model) throws Exception
     {
         Delivery delivery = new Delivery();
+        model.addAttribute("status", "add");
         model.addAttribute("delivery", delivery);
         model.addAttribute("action", "added");
         return "add-delivery";
     }
     @RequestMapping("/processDelivery")
-    public String processDelivery(@Valid @ModelAttribute("delivery") Delivery delivery, BindingResult bindingResult, Model model) throws Exception
+    public String processDelivery(@Valid @ModelAttribute("delivery") Delivery delivery, @RequestParam("status") String status, BindingResult bindingResult, Model model) throws Exception
     {
         System.out.println(delivery);
         if (bindingResult.hasErrors()) {
             return "add-delivery";
         }
         try {
+            System.out.println(status);
             if (delivery.getRefId() != 0)
                 delivery.setRef(DlvManager.getDeliveryPerson(delivery.getRefId()));
-            DlvManager.addDelivery(delivery);
+            if (status.equals("mod")) {
+                DlvManager.modifyDelivery(delivery.getDeliveryNo(), "destination", delivery.getDestination());
+                DlvManager.modifyDelivery(delivery.getDeliveryNo(), "weight", ((Double)delivery.getWeight()).toString());
+                DlvManager.modifyDelivery(delivery.getDeliveryNo(), "customerID", delivery.getCustomerID());
+            }
+            else {
+                DlvManager.addDelivery(delivery);
+                System.out.println("added");
+            }
         } catch(NoAvailableDeliveryPersonException e)
         {
             System.out.println("caught");
@@ -106,9 +131,9 @@ public class DeliveryWebController {
     {
         try {
             Delivery delivery = DlvManager.getDelivery(id);
+            model.addAttribute("status", "mod");
             model.addAttribute("delivery", delivery);
             model.addAttribute("action", "updated");
-            DlvManager.delivered(id);
             return "add-delivery";
         } catch (DeliveryNotFoundException e)
         {
@@ -121,10 +146,16 @@ public class DeliveryWebController {
     @RequestMapping("/delivered")
     public String reportDelivered(@RequestParam("dlvNum") int id, Model model) throws Exception
     {
+        model.addAttribute("type", "delivery");
+        String dest;
+        int delNum;
         try {
             Delivery delivery = DlvManager.getDelivery(id);
+            dest = delivery.getDestination();
+            delNum = delivery.getDeliveryNo();
             DlvManager.delivered(id);
-            model.addAttribute("delivery", delivery);
+            model.addAttribute("deliveryNo", delNum);
+            model.addAttribute("destination", dest);
             model.addAttribute("action", "reported delivered");
             return "success";
         } catch (NotFoundException e) {
@@ -138,18 +169,27 @@ public class DeliveryWebController {
     public String addDeliveryPerson(Model model)
     {
         DeliveryPerson delper = new DeliveryPerson();
+        model.addAttribute("status", "add");
         model.addAttribute("deliverer", delper);
         model.addAttribute("action", "added");
         return "add-delivery-person";
     }
     @RequestMapping("/processDeliveryPerson")
-    public String processDeliveryPerson(@Valid @ModelAttribute("deliverer") DeliveryPerson delper, BindingResult bindingResult, Model model) throws Exception
+    public String processDeliveryPerson(@Valid @ModelAttribute("deliverer") DeliveryPerson delper, @RequestParam("status") String status ,BindingResult bindingResult, Model model) throws Exception
     {
         if (bindingResult.hasErrors()) {
             return "add-delivery-person";
         }
-
-        DlvManager.addDeliveryPerson(delper);
+        if(status.equals("mod"))
+        {
+            int id = delper.getID();
+            System.out.println(id);
+            DlvManager.modifyDeliveryPerson(id, "name", delper.getName());
+            DlvManager.modifyDeliveryPerson(id, "max capacity", ((Integer)delper.getDeliveryMaxCapacity()).toString());
+            DlvManager.modifyDeliveryPerson(id, "city", delper.getCity());
+        }
+        else
+            DlvManager.addDeliveryPerson(delper);
 
         model.addAttribute("deliverer", delper);
         model.addAttribute("type", "deliverer");
@@ -166,28 +206,50 @@ public class DeliveryWebController {
     @RequestMapping("/modifyDeliveryPerson")
     public String modifyDeliverer(@RequestParam("id") int id, Model model)
     {
-        return "success";
+        DeliveryPerson delper = null;
+        try {
+            delper = DlvManager.getDeliveryPerson(id);
+        } catch(NotFoundException e) {
+            model.addAttribute("errorTitle", "Not Found");
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error";
+        }
+        model.addAttribute("status", "mod");
+        model.addAttribute("deliverer", delper);
+        return "add-delivery-person";
     }
     @RequestMapping("/showAllDeliveries")
     public String showAllDeliveries(@RequestParam("id") int id, Model model)
     {
-        /*Delivery col;
+        try {
+            model.addAttribute("header", "Deliveries of " + DlvManager.getDeliveryPerson(id).getName());
+        } catch (NotFoundException e)
+        {
+            model.addAttribute("errorTitle", "Not Found");
+            model.addAttribute("errorMessage", "person not found");
+            return "error";
+        }
+        ArrayList<Delivery> col = null;
         try {
             col = DlvManager.getDeliveriesOfPreson(id);
         } catch (NotFoundException e) {
             model.addAttribute("message", "delivery person has no deliveries");
+            return "deliveries";
         }
         model.addAttribute("tbData", col);
-        model.addAttribute("dlvNum", "");*/
+        model.addAttribute("dlvNum", col.size());
 
-        return "success";
+        return "deliveries";
     }
     @RequestMapping("/fire")
     public String fireDeliverer(@RequestParam("id") int id, Model model)
     {
         DeliveryPerson delper;
+        String name, city;
         try {
             delper = DlvManager.getDeliveryPerson(id);
+            name = delper.getName();
+            city = delper.getCity();
             DlvManager.fireDeliveryPerson(id);
         } catch (UnfinishedDutyException e) {
             model.addAttribute("errorTitle", "Cannot Fire Delivery Person");
@@ -199,7 +261,8 @@ public class DeliveryWebController {
             return "error";
         }
         model.addAttribute("type", "deliverer");
-        model.addAttribute("deliveryperson", delper);
+        model.addAttribute("name", name);
+        model.addAttribute("city", city);
         model.addAttribute("action", "fired");
         
         return "success";

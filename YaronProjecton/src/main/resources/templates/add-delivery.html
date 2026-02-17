@@ -10,7 +10,8 @@
 </head>
 <body>
 <section layout:fragment="content">
- <h1>Add Delivery</h1>
+ <h1 th:if="${status == 'add'}">Add Delivery</h1>
+ <h1 th:if="${status == 'mod'}">Modify Delivery</h1>
  <form th:action="@{/processDelivery}" th:object="${delivery}" method="post">
      <div th:if="${#fields.hasErrors('*')}" class="bg-light border border-danger text-danger p-2">
          <ul>
@@ -24,6 +25,7 @@
          <p>Destination: <input type="text" th:field="*{destination}" placeholder="Delivery Destination" th:value="*{destination}"></p>
          <input type="hidden" th:if="${delivery.deliveryNo != 0}" th:field="*{deliveryNo}" th:value="${delivery.deliveryNo}">
          <input type="hidden" th:if="${delivery.ref != null}" th:field="*{refId}" th:value="${delivery.ref.delivererID}">
+         <input type="hidden" name="status" th:value="${status}">
          <div class="row justify-content-start">
              <div class="col">
                  <input class="btn btn-primary" type="submit" value="Save">

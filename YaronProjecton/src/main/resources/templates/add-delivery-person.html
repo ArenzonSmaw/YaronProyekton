@@ -10,7 +10,8 @@
 </head>
 <body>
 <section layout:fragment="content">
-    <h1>Add Delivery Person</h1>
+    <h1 th:if="${status == 'add'}">Add Delivery Person</h1>
+    <h1 th:if="${status == 'mod'}">Modify Delivery Person</h1>
     <form th:action="@{/processDeliveryPerson}" th:object="${deliverer}" method="post">
         <div th:if="${#fields.hasErrors('*')}" class="bg-light border border-danger text-danger p-2">
             <ul>
@@ -23,7 +24,9 @@
             <p>City: <input type="text" th:field="*{city}" placeholder="City of Operations" th:value="*{city}"></p>
             <p>Max Capacity: <input type="number" th:field="*{deliveryMaxCapacity}" placeholder="deliveries capacity" th:value="*{deliveryMaxCapacity}"></p>
             <input type="hidden" th:field="*{deliveryCounter}" th:value="${deliverer.deliveryCounter}">
-            <input type="hidden" th:if="${dliverer != null && deliverer.delivererID != null}" th:field="*{delivererID}" th:value="${delivery.delivererID}">
+            <input type="hidden" th:if="${deliverer != null && deliverer.delivererID != 0}" th:field="*{delivererID}" th:value="*{delivererID}">
+            <input type="hidden" name="status" th:value="${status}">
+            <p th:text="*{delivererID}"></p>
             <div class="row justify-content-start">
                 <div class="col">
                     <input class="btn btn-primary" type="submit" value="Save">
