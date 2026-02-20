@@ -22,11 +22,10 @@
         <div class="container justify-content-center">
             <p>Name: <input type="text" th:field="*{name}" placeholder="Delivery Person Name" th:value="*{name}"></p>
             <p>City: <input type="text" th:field="*{city}" placeholder="City of Operations" th:value="*{city}"></p>
-            <p>Max Capacity: <input type="number" th:field="*{deliveryMaxCapacity}" placeholder="deliveries capacity" th:value="*{deliveryMaxCapacity}"></p>
+            <p>Max Capacity: <input type="number" th:field="*{deliveryMaxCapacity}" placeholder="deliveries capacity" th:value="*{deliveryMaxCapacity != null ? deliveryMaxCapacity : '10'}"></p>
             <input type="hidden" th:field="*{deliveryCounter}" th:value="${deliverer.deliveryCounter}">
             <input type="hidden" th:if="${deliverer != null && deliverer.delivererID != 0}" th:field="*{delivererID}" th:value="*{delivererID}">
             <input type="hidden" name="status" th:value="${status}">
-            <p th:text="*{delivererID}"></p>
             <div class="row justify-content-start">
                 <div class="col">
                     <input class="btn btn-primary" type="submit" value="Save">

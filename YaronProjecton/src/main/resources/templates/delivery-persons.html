@@ -16,6 +16,7 @@
             <th scope="col">Del. Person ID</th>
             <th scope="col">Name</th>
             <th scope="col">City of Operations</th>
+            <th scope="col">Active Deliveries</th>
             <th scope="col">Maximal Del. Capacity</th>
             <th scope="col">Actions</th>
         </tr>
@@ -23,7 +24,8 @@
             <td th:text="${delper.delivererID}">error</td>
             <td th:text="${delper.name}">error</td>
             <td th:text="${delper.city}">error</td>
-            <td th:text="${delper.deliveryMaxCapacity}  ">error</td>
+            <td th:text="${delper.deliveryCounter}">error</td>
+            <td th:text="${delper.deliveryMaxCapacity}">error</td>
 
             <td>
                 <span th:with="id = ${delper.delivererID}">

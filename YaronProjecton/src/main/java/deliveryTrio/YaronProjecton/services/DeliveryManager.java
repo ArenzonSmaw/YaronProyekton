@@ -156,6 +156,7 @@ public class DeliveryManager {
     }
     public void delivered(int number) throws NotFoundException, CantUpdateDataException {
         Delivery temp = getDelivery(number);
+        System.out.println(temp.getRef());
         if(temp.getRef() != null)
             temp.getRef().removeDelivery();
         dao.remove(temp);
@@ -207,7 +208,7 @@ public class DeliveryManager {
             case "city":
                 if(temp.getDeliveryCounter() > 0 && newVal != "administrativeleave")
                     throw new UnfinishedDutyException(id);
-                temp.setName(newVal);
+                temp.setCity(newVal);
                 break;
             case "name":
                 temp.setName(newVal);

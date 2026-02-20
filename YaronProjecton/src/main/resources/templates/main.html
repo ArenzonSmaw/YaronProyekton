@@ -7,12 +7,36 @@
 </head>
 <body>
 <section layout:fragment="content">
-    <h2 th:text="${title}"></h2>
-    <table th:object="${tbData}">
-        <tr>
-
-        </tr>
-    </table>
+    <h1 class="h1 text-center">Delivery Trio</h1>
+    <div class="container">
+    <h3>Get Started</h3>
+    <div class="row">
+        <style>
+            img {
+                height: 400px;
+                max-width: 500px;
+            }
+        </style>
+        <img th:src="@{/image/delivery-instalator-5.png}" class="col">
+        <img th:src="@{/image/delivery-instalator-1.png}" class="col">
+    </div>
+    <div class="row">
+        <a th:href="@{/addDelivery}" class="col button btn btn-success">Add New Delivery</a>
+        <a th:href="@{/addDeliveryPerson}" class="col button btn btn-info">Add New Delivery Person</a>
+    </div>
+        <div class="row">
+            <a th:href="@{/ShowDeliveries}" class="col button btn btn-secondary">See Deliveries</a>
+            <a th:href="@{/ShowDeliveryPersons}" class="col button btn btn-warning">See Delivery Persons</a>
+        </div>
+    <br>
+    <br>
+    <h3>About Us</h3>
+    <p>We at delivery trio have revolutionized the delivery industry with the vision to hire plumbers as delivery persons.
+        This allows a unique outside perspective on the way of the delivery, from the view of an experienced plumber.
+        A quality we observed over our period working with plumbers, is the tool box they got by dealing with countless problems in the past.
+        The result is a small but highly effective team of senior plumbers, that can take just about any hardship coming their way.
+        Our hope is to inspire a new wave of delivery people that get into the field after gaining life experience, and effectively torpedo the industry forward with efficiency.</p>
+    </div>
 </section>
 </body>
 </html>

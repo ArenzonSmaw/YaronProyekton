@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class SecurityController {
 
+    private static int tries = 0;
 	private final SecurityService security;
 
 	public SecurityController(SecurityService security) {
@@ -25,14 +26,23 @@ public class SecurityController {
     public String startPoint(){return "redirect:/login";}
 
 	@GetMapping("/login")
-	public String showLoginForm(@ModelAttribute("user") User user) {
-		return "login-page";
+	public String showLoginForm(HttpSession session, Model model) {
+        var user = session.getAttribute("user");
+        if (user == null)
+        {
+            user = new User();
+            model.addAttribute("user", user);
+            return "login-page";
+        }
+        model.addAttribute("user", (User)user);
+		return "redirect:/processLogin";
 	}
 
 	@PostMapping("/processLogin")
 	public String processLogin(@ModelAttribute("user") User user,
 							   HttpServletRequest request,
-							   RedirectAttributes redirectAttributes) {
+							   RedirectAttributes redirectAttributes,
+                               HttpSession session) {
 
 		if (security.login(user)) {
 			// protection against Session Fixation attck
@@ -44,16 +54,12 @@ public class SecurityController {
 			HttpSession newSession = request.getSession(true);
 			newSession.setAttribute("user", user);
 
-			return "redirect:/ShowDeliveries";
+			return "redirect:/main";
 		}
-
-		redirectAttributes.addFlashAttribute("message", "Username or password incorrect");
+        tries++;
+        session.setAttribute("counter", tries);
+		redirectAttributes.addFlashAttribute("loginErrorMessage", "Username or password incorrect");
 		return "redirect:/login";
-	}
-
-	@GetMapping("/showMainScreen")
-	public String showMainScreen() {
-		return "main-screen";
 	}
 
 	@GetMapping("/logout")

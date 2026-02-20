@@ -11,6 +11,8 @@
 <section layout:fragment="content">
     <h2 th:text="${header}">Deliveries</h2>
     <p th:if="${message != null}" th:text="${message}"></p>
+    <p th:text="'found ' + ${dlvNum != null ? dlvNum : '0'} + ' deliveries.'"></p>
+    <a class="button btn btn-primary" th:href="@{/RefreshDeliveryAssignments(id=${id})}">Refresh Delivery Assignments</a>
     <table class="table table-striped table-bordered">
         <tr>
             <th scope="col">Del. Number</th>
